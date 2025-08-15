@@ -420,6 +420,9 @@ export enum EnumPlanType {
   POS_PLAN = "POS_PLAN",
   MONTHLY_PLAN = "MONTHLY_PLAN",
   FREE_TEST_PLAN = "FREE_TEST_PLAN",
+  TRIAL = "TRIAL",
+  WITH_POS_SUBSCRIPTION = "WITH_POS_SUBSCRIPTION",
+  WITH_PIX_SUBSCRIPTION = "WITH_PIX_SUBSCRIPTION",
 }
 
 export enum EnumTransferIntervalType {
@@ -508,3 +511,29 @@ export type TableNavigation = {
   currentPage: number;
   totalPages: number;
 };
+
+export type PlanDTO = {
+  // id?: number;
+  // name: string;
+  // description?: string;
+  type: EnumPlanType;
+  // status: EnumPlanStatus;
+  // expirationTime: EnumExpirationTime;
+  // percentage?: number;
+};
+
+export enum EnumPlanStatus {
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
+  CHANGED = "CHANGED",
+  CANCELLED = "CANCELLED",
+}
+
+export enum EnumExpirationTime {
+  NEVER = "NEVER",
+  FIVE_MINUTES = "FIVE_MINUTES",
+  ONE_DAY = "ONE_DAY",
+  ONE_WEEK = "ONE_WEEK",
+  ONE_MONTH = "ONE_MONTH",
+  SIX_MONTHS = "SIX_MONTHS",
+}

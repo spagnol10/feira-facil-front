@@ -24,12 +24,14 @@ export default function ProfileView() {
                         <h2 className="text-dark-color text-lg font-medium">
                             Informações básicas
                         </h2>
-                        <div className="flex lg:w-4/5 xl:w-3/5 flex-col gap-6 mt-10">
+                        <div className="flex xl:w-4/5 flex-col gap-6 mt-10">
                             <div className="flex flex-col gap-6 md:flex-row">
                                 <span className="w-full">
-                                    <CustomInput id="name" value={viewModel.userData?.name ?? ""}
+                                    <CustomInput id="name"
+                                        value={viewModel.userData?.name ?? ""}
                                         invalid={!utils.isValidString(viewModel.userData.name)}
-                                        inputHeaderText="Nome" onChange={e => utils.handleChange(e, viewModel.setUserData)} />
+                                        inputHeaderText="Nome"
+                                        onChange={e => utils.handleChange(e, viewModel.setUserData)} />
                                 </span>
                                 <span className="w-full">
                                     <CustomInput id="email" placeHolder="Insira seu e-mail" type="email" value={viewModel.userData?.email ?? ""}
@@ -85,14 +87,20 @@ export default function ProfileView() {
                         <h2 className="text-dark-color text-lg font-medium mt-16">
                             Endereço
                         </h2>
-                        <div className="flex lg:w-4/5 xl:w-3/5 flex-col gap-6 mt-10">
-                            <AddressForm address={viewModel?.userData?.address}
-                                setObject={viewModel.setUserData} isParentSetObject showMessage />
+                        <div className="flex xl:w-4/5 flex-col gap-6 mt-10">
+                            <AddressForm
+                                address={viewModel?.userData?.address}
+                                setObject={viewModel.setUserData}
+                                isParentSetObject
+                                showMessage />
                         </div>
                     </div>
                     <div className="w-full h-10 flex mt-10 md:mt-auto justify-end">
                         <span className="w-full md:w-40">
-                            <Button disabled={!viewModel.isValidUpdate()} text="Salvar alterações" onClick={viewModel.handleUpdateUserData} />
+                            <Button
+                                disabled={!viewModel.isValidUpdate()}
+                                text="Salvar alterações"
+                                onClick={viewModel.handleUpdateUserData} />
                         </span>
                     </div>
                 </div>

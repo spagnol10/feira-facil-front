@@ -24,7 +24,7 @@ import { fecthExternalCitiesByState, handleFetchExternalCnpjData } from "../../r
 import { createFair, fecthFairsBy } from "../../repositories/fair.repository";
 import { getUserData } from "../../repositories/user.repository";
 import { handleErrorToast, handleWarnToast } from "../../utils/toast";
-import { EnumAccountTypeType, EnumAcquirerConfigStatus, EnumCompanyScreen, EnumLoadingTextType, EnumPlanType, EnumRegisterCompanyStep, EnumScreen, EnumTransferIntervalType, EnumWeekDaysType } from "../../utils/types";
+import { EnumAccountTypeType, EnumAcquirerConfigStatus, EnumCompanyScreen, EnumExpirationTime, EnumLoadingTextType, EnumPlanStatus, EnumPlanType, EnumRegisterCompanyStep, EnumScreen, EnumTransferIntervalType, EnumWeekDaysType, PlanDTO } from "../../utils/types";
 import { equalsEnum, equalsStr, formatCNPJInput, formatCPFInput, formatCurrency, formatDateDDMMYYYYInput, formatHHmmInput, formatPhoneInput, generateUUID, getAccountStatusDescription, getAccountType, getToken, getTransferIntervalByString, getTransferIntervalDescription, getWeekDayByString, getWeekDayDescription, handleChange, handleChangeValue, handleCurrencyChange, isValidHour, isValidObjectRequiredFields, isValidPositiveStrNumber, isValidString, onlyNumbers, siglasUF, validateCNPJ, validateCPF, validateEmail, validatePhone, validateZipCode, weekDayMap } from "../../utils/util";
 import useMiddleware from "../../viewmodel/middleware";
 
@@ -49,6 +49,7 @@ export default function CompanyView() {
     const [registerFair, setRegisterFair] = useState<Fair>()
     const [loadingText, setLoadingText] = useState<EnumLoadingTextType | undefined>(EnumLoadingTextType.DEFAULT_LOADING_TEXT);
     const [companyDataView, setCompanyDataView] = useState(true);
+    const [plan, setPlan] = useState<PlanDTO>();
 
     useEffect(() => {
         setIsClient(true);
@@ -437,6 +438,13 @@ export default function CompanyView() {
             company.owner = owner!;
             company.fairsId = fairsId;
 
+            company.plan = {
+                type: EnumPlanType.TRIAL,
+            };
+
+            console.log(company);
+            
+
             handleCreateCompany(company, token)
                 .then(res => {
                     handleUpdateCompany(res)
@@ -459,7 +467,7 @@ export default function CompanyView() {
                     bank: bankCodes.find(bank => bank.nome === acquirerConfig.bankAccount!.bank)?.codigo
                 }
             } as AcquirerConfig;
-            
+
             handleCreateAcquirer(payload, company?.id!, token)
                 .then(res => {
                     handleChangeValue(res.status, "status", setAcquirerConfig);
@@ -1592,15 +1600,15 @@ export default function CompanyView() {
                                     </div>
                                 </div>
                                 <span className="hidden md:flex">
-                                    <TablePaginator 
-                                    currentPage={1}
-                                    totalItems={1}
-                                    totalPages={1}
-                                    handleChangePage={() => console.log("Teste table")} />
+                                    <TablePaginator
+                                        currentPage={1}
+                                        totalItems={1}
+                                        totalPages={1}
+                                        handleChangePage={() => console.log("Teste table")} />
                                 </span>
                             </div>
                             <span className="flex md:hidden">
-                                <TablePaginator 
+                                <TablePaginator
                                     currentPage={1}
                                     totalItems={1}
                                     totalPages={1}

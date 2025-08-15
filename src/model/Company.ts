@@ -1,3 +1,4 @@
+import { PlanDTO } from "../utils/types";
 import { capitalizeWordsIgnoreValues, decryptStrData } from "../utils/util";
 import { Address } from "./Address";
 import { Fair } from "./Fair";
@@ -17,6 +18,7 @@ export class Company {
     fairsId?: Array<String> = [];
     organization: boolean = true;
     hasAcquirerConfig: boolean = false;
+    plan?: PlanDTO;
 
     constructor(init?: Partial<Company>) {
 

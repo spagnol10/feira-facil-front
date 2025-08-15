@@ -28,22 +28,18 @@ export default function ProductTable({
         </div>
         <table className="w-full mt-8 hidden md:block">
           <thead className="w-full">
-            <th className="w-12" />
-            <th className="text-left text-secondary text-xs font-normal">
-              Código
-            </th>
-            <th className="text-secondary text-xs font-normal">Nome</th>
-            <th className="text-secondary text-xs font-normal">Valor custo</th>
-            <th className="text-secondary text-xs font-normal">Valor venda</th>
-            <th className="text-secondary text-xs font-normal">Estoque</th>
-            <th className="text-secondary text-xs font-normal">Mensuração</th>
-            <th className="text-secondary text-xs font-normal">
-              Unidade mensuração
-            </th>
-            <th className="text-secondary text-xs font-normal">Tipo</th>
-            <th className="text-secondary text-xs font-normal">Status</th>
-            <th className="text-secondary text-xs font-normal">Editar</th>
-            <th className="w-12" />
+            <th className="w-12 px-4 py-2" />
+            <th className="w-24 text-secondary text-xs font-normal px-4 py-2">Código</th>
+            <th className="w-48 text-secondary text-xs font-normal px-4 py-2">Nome</th>
+            <th className="w-32 text-secondary text-xs font-normal px-4 py-2">Valor custo</th>
+            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Valor venda</th>
+            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Estoque</th>
+            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Mensuração</th>
+            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Unidade mensuração</th>
+            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Tipo</th>
+            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Status</th>
+            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Editar</th>
+            <th className="w-12 px-4 py-2" />
           </thead>
           <tbody>
             {products.map((item) => (
@@ -91,11 +87,10 @@ export default function ProductTable({
                   <div className="w-full flex justify-center">
                     <p
                       className={`p-0.5 px-3 rounded-2xl w-fit text-sm whitespace-nowrap
-                    ${
-                      item.active
-                        ? "bg-green-100 text-secondary"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                    ${item.active
+                          ? "bg-green-100 text-secondary"
+                          : "bg-red-100 text-red-600"
+                        }`}
                     >
                       {item.active ? "ATIVO" : "DESATIVADO"}
                     </p>
