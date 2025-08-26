@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { Product } from "../../model/Product";
-import { FilterProduct, TableNavigation } from "../../utils/types";
+import {
+  EnumMeasurementType,
+  EnumMeasurementUnit,
+  EnumProductCategory,
+  FilterProduct,
+  TableNavigation
+} from "../../utils/types";
 import { getToken } from "../../utils/util";
 import {
   handleFilterFetchProducts,
@@ -10,6 +16,7 @@ import {
 import useMiddleware from "../middleware";
 import { useAppContext } from "../../context/appContext";
 import { toast } from "react-toastify";
+import * as utils from "../../utils/util";
 
 export default function useProductViewModel() {
   const { isAuth, verifyUserAuth } = useMiddleware();
@@ -30,7 +37,7 @@ export default function useProductViewModel() {
   const isNewProduct = productToEdit?.id === undefined;
 
   useEffect(() => {
-    
+
     setIsClient(true);
 
     verifyUserAuth()
@@ -42,25 +49,25 @@ export default function useProductViewModel() {
   function openNewProductForm() {
 
     setProductToEdit(new Product());
-  
+
   }
 
   function closeProductForm() {
-  
+
     setProductToEdit(undefined);
-  
+
   }
 
   function setFieldValue(field: keyof Product, value: any) {
-    
+
     setProductToEdit((prev) => {
-    
+
       if (!prev) return prev;
 
       const updated = { ...prev, [field]: value };
-    
+
       return Object.assign(Object.create(Object.getPrototypeOf(prev)), updated);
-    
+
     });
   }
 
@@ -155,7 +162,85 @@ export default function useProductViewModel() {
         .catch(console.error)
         .finally(() => setLoading(false));
     }
+
+
+    function parseMeasurementTypeToLabel(): string {
+      if (!productToEdit?.measurementType) return "";
+      switch (productToEdit.measurementType) {
+        case EnumMeasurementType.UNIT: return "Unidade";
+        case EnumMeasurementType.BOX: return "Caixa";
+        case EnumMeasurementType.WEIGHT: return "Peso";
+        case EnumMeasurementType.VOLUME: return "Volume";
+        default: return "";
+      }
+    }
+
+    function parseMeasurementUnitToLabel(): string {
+      if (!productToEdit?.measurementUnit) return "";
+      switch (productToEdit.measurementUnit) {
+        case EnumMeasurementUnit.KG: return "Kilograma";
+        case EnumMeasurementUnit.G: return "Grama";
+        case EnumMeasurementUnit.L: return "Litro";
+        case EnumMeasurementUnit.ML: return "Mililitro";
+        case EnumMeasurementUnit.QTD: return "Quantidade";
+        default: return "";
+      }
+    }
+
+    function parseCategoryToLabel(): string {
+      if (!productToEdit?.category) return "";
+      switch (productToEdit.category) {
+        case EnumProductCategory.VERDURA: return "Verdura";
+        case EnumProductCategory.LEGUME: return "Legume";
+        case EnumProductCategory.FRUTA: return "Fruta";
+        case EnumProductCategory.CEREAIS_GRAOS: return "Grãos e Cereais";
+        case EnumProductCategory.ERVAS_TEMPEROS: return "Ervas e Temperos";
+        case EnumProductCategory.PRODUCAO_CASEIRA: return "Produção Caseira";
+        case EnumProductCategory.ARTESANATO: return "Artesanato";
+        case EnumProductCategory.FLORES: return "Flores";
+        default: return "";
+      }
+    }
+
   }
+
+  function parseMeasurementTypeToLabel(): string {
+    if (!productToEdit?.measurementType) return "";
+    switch (productToEdit.measurementType) {
+        case EnumMeasurementType.UNIT: return "Unidade";
+        case EnumMeasurementType.BOX: return "Caixa";
+        case EnumMeasurementType.WEIGHT: return "Peso";
+        case EnumMeasurementType.VOLUME: return "Volume";
+        default: return "";
+    }
+}
+
+function parseMeasurementUnitToLabel(): string {
+    if (!productToEdit?.measurementUnit) return "";
+    switch (productToEdit.measurementUnit) {
+        case EnumMeasurementUnit.KG: return "Kilograma";
+        case EnumMeasurementUnit.G: return "Grama";
+        case EnumMeasurementUnit.L: return "Litro";
+        case EnumMeasurementUnit.ML: return "Mililitro";
+        case EnumMeasurementUnit.QTD: return "Quantidade";
+        default: return "";
+    }
+}
+
+function parseCategoryToLabel(): string {
+    if (!productToEdit?.category) return "";
+    switch (productToEdit.category) {
+        case EnumProductCategory.VERDURA: return "Verdura";
+        case EnumProductCategory.LEGUME: return "Legume";
+        case EnumProductCategory.FRUTA: return "Fruta";
+        case EnumProductCategory.CEREAIS_GRAOS: return "Grãos e Cereais";
+        case EnumProductCategory.ERVAS_TEMPEROS: return "Ervas e Temperos";
+        case EnumProductCategory.PRODUCAO_CASEIRA: return "Produção Caseira";
+        case EnumProductCategory.ARTESANATO: return "Artesanato";
+        case EnumProductCategory.FLORES: return "Flores";
+        default: return "";
+    }
+}
 
   return {
     isClient,
@@ -172,5 +257,8 @@ export default function useProductViewModel() {
     updateProduct,
     validateProduct,
     tableNavigation,
+    parseMeasurementTypeToLabel,
+    parseMeasurementUnitToLabel,
+    parseCategoryToLabel,
   };
 }

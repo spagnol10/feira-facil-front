@@ -280,7 +280,7 @@ export type PreRegisterUserType = {
 
 export type ProductPagebleList = {
   data: Array<Product>;
-  totalItens: number;
+  totalItems: number;
   totalPages: number;
   currentPage: number;
 };
@@ -379,23 +379,6 @@ export enum EnumRegisterCompanyStep {
   POS_RESQUEST,
 }
 
-export enum EnumProductType {
-  VERDURA = "VERDURA",
-  LEGUME = "LEGUME",
-  FRUTA = "FRUTA",
-  FRUITS = "FRUITS",
-  VEGETABLES = "VEGETABLES",
-  LEGUMES = "LEGUMES",
-  ANIMAL_ORIGIN = "ANIMAL_ORIGIN",
-  HERBS_SPICES = "HERBS_SPICES",
-  HOMEMADE_PRODUCTION = "HOMEMADE_PRODUCTION",
-  CEREALS_GRAINS = "CEREALS_GRAINS",
-  SNACKS = "SNACKS",
-  CRAFTS = "CRAFTS",
-  FLOWERS = "FLOWERS",
-  HOUSEHOLD_UTENSILS = "HOUSEHOLD_UTENSILS",
-}
-
 export enum EnumEntryOut {
   ENTRY = "ENTRADA",
   OUT = "SAÍDA",
@@ -439,21 +422,6 @@ export enum EnumWeekDaysType {
   FRIDAY = 5,
 }
 
-export enum EnumMeasurementType {
-  UNIT = "UNIT",
-  BOX = "BOX",
-  WEIGHT = "WEIGHT",
-  VOLUME = "VOLUME",
-}
-
-export enum EnumMeasurementUnit {
-  KG = "KG",
-  G = "Grama",
-  L = "Litro",
-  ML = "Mililitro",
-  QTD = "Quantidade",
-}
-
 export enum EnumAccountTypeType {
   CHECKING = "CHECKING",
   SAVINGS = "SAVINGS",
@@ -481,7 +449,7 @@ export type ProductDTO = {
   sellingPrice: number;
   measurementType?: EnumMeasurementType;
   measurementUnit?: EnumMeasurementUnit;
-  category?: EnumProductType;
+  category?: EnumProductCategory;
   active?: boolean;
   stock: number;
   description: string;
@@ -536,4 +504,29 @@ export enum EnumExpirationTime {
   ONE_WEEK = "ONE_WEEK",
   ONE_MONTH = "ONE_MONTH",
   SIX_MONTHS = "SIX_MONTHS",
+}
+
+export enum EnumMeasurementType {
+  UNIT = "UNIDADE",
+  BOX = "CAIXA",
+  WEIGHT = "PESO",
+  VOLUME = "VOLUME",
+}
+
+export enum EnumMeasurementUnit {
+  KG = "KILOGRAMA",
+  G = "GRAMA",
+  L = "LITRO",
+  ML = "MILILITRO",
+  QTD = "QUANTIDADE",
+}
+
+export enum EnumProductCategory {
+  VERDURA = "VERDURA",
+  LEGUME = "LEGUME",
+  FRUTA = "FRUTA",
+  CEREAIS_GRAOS = "GRAOS",
+  ERVAS_TEMPEROS = "TEMPEROS",
+  ARTESANATO = "ARTESANATO",
+  FLORES = "FLORES",
 }

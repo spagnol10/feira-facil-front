@@ -4,7 +4,7 @@ import CustomTextArea from "../../components/standard/CustomTextArea";
 import CustomToggle from "../../components/standard/CustomToggle";
 import DefaultSelectOne from "../../components/standard/DefaultSelectOne";
 import { ArrowLeftIcon } from "../../components/svg/SvgIcons";
-import { EnumMeasurementType, EnumMeasurementUnit, EnumProductType } from "../../utils/types";
+import { EnumMeasurementType, EnumMeasurementUnit, EnumProductCategory } from "../../utils/types";
 import { handleChange, handleChangeValue, equalsBoolean } from "../../utils/util";
 import { Product } from "../../model/Product";
 
@@ -51,7 +51,7 @@ export default function ProductForm({
                         <DefaultSelectOne
                             handleSelect={val => handleChangeValue(val, "measurementType", setProductToEdit)}
                             inputHeaderText="Tipo mensuração"
-                            placeHolder={"Tipo mensuração"}
+                            placeHolder="Tipo de demensuração"
                             optionValue={productToEdit?.measurementType?.toString() || ""}
                             options={[
                                 EnumMeasurementType.UNIT,
@@ -60,10 +60,11 @@ export default function ProductForm({
                                 EnumMeasurementType.VOLUME
                             ]}
                         />
+
                         <DefaultSelectOne
                             handleSelect={val => handleChangeValue(val, "measurementUnit", setProductToEdit)}
                             inputHeaderText="Unidade mensuração"
-                            placeHolder={"Unidade mensuração"}
+                            placeHolder="Unidade de mensuração"
                             optionValue={productToEdit?.measurementUnit?.toString() || ""}
                             options={[
                                 EnumMeasurementUnit.KG,
@@ -73,17 +74,20 @@ export default function ProductForm({
                                 EnumMeasurementUnit.QTD,
                             ]}
                         />
+
                         <DefaultSelectOne
                             handleSelect={val => handleChangeValue(val, "category", setProductToEdit)}
                             inputHeaderText="Tipo"
-                            placeHolder={"Tipo"}
+                            placeHolder="Tipo de Produto"
                             optionValue={productToEdit?.category?.toString() ?? ""}
                             options={[
-                                EnumProductType.VEGETABLES,
-                                EnumProductType.FRUITS,
-                                EnumProductType.LEGUME,
-                                EnumProductType.CRAFTS,
-                                EnumProductType.FLOWERS,
+                                EnumProductCategory.VERDURA,
+                                EnumProductCategory.LEGUME,
+                                EnumProductCategory.FRUTA,
+                                EnumProductCategory.CEREAIS_GRAOS,
+                                EnumProductCategory.ERVAS_TEMPEROS,
+                                EnumProductCategory.ARTESANATO,
+                                EnumProductCategory.FLORES
                             ]}
                         />
                     </div>
@@ -110,7 +114,7 @@ export default function ProductForm({
                                 <CustomToggle
                                     idToggle="active"
                                     selected={productToEdit.active ?? false}
-                                    handleChange={() => setFieldValue("active", !productToEdit.active)} /> 
+                                    handleChange={() => setFieldValue("active", !productToEdit.active)} />
                             </span>
                         </span>
                     </div>

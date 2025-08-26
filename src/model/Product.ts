@@ -1,4 +1,4 @@
-import { EnumMeasurementType, EnumMeasurementUnit, EnumProductType } from "../utils/types";
+import { EnumMeasurementType, EnumMeasurementUnit, EnumProductCategory } from "../utils/types";
 
 export class Product {
     id?: string;
@@ -9,7 +9,7 @@ export class Product {
     sellingPrice: number = 0;
     measurementType?: EnumMeasurementType;
     measurementUnit?: EnumMeasurementUnit;
-    category?: EnumProductType;
+    category?: EnumProductCategory;
     stock: number = 0;
     description: string = "";
     active?: boolean;

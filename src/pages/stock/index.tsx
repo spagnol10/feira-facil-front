@@ -15,8 +15,8 @@ import {
   PlusIcon,
 } from "../../components/svg/SvgIcons";
 import {
+  EnumProductCategory,
   EnumEntryOut,
-  EnumProductType,
   EnumScreen,
   StockMovementType,
 } from "../../utils/types";
@@ -45,7 +45,7 @@ export default function StockView() {
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.VERDURA,
+        tipo: EnumProductCategory.VERDURA,
         status: "ACTIVE",
         estoque: 58,
         descricao: `A alface (Lactuca sativa) é uma hortaliça folhosa amplamente consumida em todo o mundo, conhecida por sua textura crocante e sabor suave. Versátil e nutritiva, é um ingrediente essencial em saladas, sanduíches e acompanhamentos.
@@ -70,7 +70,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.VERDURA,
+        tipo: EnumProductCategory.VERDURA,
         status: "ACTIVE",
         estoque: 58,
         descricao: `A alface (Lactuca sativa) é uma hortaliça folhosa amplamente consumida em todo o mundo, conhecida por sua textura crocante e sabor suave. Versátil e nutritiva, é um ingrediente essencial em saladas, sanduíches e acompanhamentos.
@@ -95,7 +95,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.VERDURA,
+        tipo: EnumProductCategory.VERDURA,
         status: "ACTIVE",
         estoque: 58,
         descricao: `A alface (Lactuca sativa) é uma hortaliça folhosa amplamente consumida em todo o mundo, conhecida por sua textura crocante e sabor suave. Versátil e nutritiva, é um ingrediente essencial em saladas, sanduíches e acompanhamentos.
@@ -120,7 +120,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.FRUTA,
+        tipo: EnumProductCategory.LEGUME,
         status: "ACTIVE",
         estoque: 34,
       },
@@ -139,7 +139,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.VERDURA,
+        tipo: EnumProductCategory.VERDURA,
         status: "ACTIVE",
         estoque: 58,
         descricao: `A alface (Lactuca sativa) é uma hortaliça folhosa amplamente consumida em todo o mundo, conhecida por sua textura crocante e sabor suave. Versátil e nutritiva, é um ingrediente essencial em saladas, sanduíches e acompanhamentos.
@@ -164,7 +164,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.LEGUME,
+        tipo: EnumProductCategory.LEGUME,
         status: "ACTIVE",
         estoque: 19,
       },
@@ -183,7 +183,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.VERDURA,
+        tipo: EnumProductCategory.VERDURA,
         status: "INACTIVE",
         estoque: 0,
       },
@@ -202,7 +202,7 @@ Benefícios Nutricionais
         valorVenda: 2.5,
         mensuracao: "Unidade",
         unidadeMensuracao: "QTD",
-        tipo: EnumProductType.FRUTA,
+        tipo: EnumProductCategory.FRUTA,
         status: "ACTIVE",
         estoque: 34,
       },
