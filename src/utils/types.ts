@@ -481,13 +481,13 @@ export type TableNavigation = {
 };
 
 export type PlanDTO = {
-  // id?: number;
-  // name: string;
-  // description?: string;
+  id?: number;
+  name: string;
+  description?: string;
   type: EnumPlanType;
-  // status: EnumPlanStatus;
-  // expirationTime: EnumExpirationTime;
-  // percentage?: number;
+  status: EnumPlanStatus;
+  expirationTime: EnumExpirationTime;
+  percentage?: number;
 };
 
 export enum EnumPlanStatus {
