@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import bankCodes from "../../assets/bankcodes.json";
 import PosImage from "../../assets/pos_stone.webp";
 import AddressForm from "../../components/addressform/view";
+import CompanyRegistrationSteps from "../../components/company/CompanyRegistrationSteps";
 import Button from "../../components/standard/Button";
 import CustomInput from "../../components/standard/CustomInput";
 import CustomSelectOne from "../../components/standard/CustomSelectOne";
@@ -11,555 +11,82 @@ import DefaultScreenLayout from "../../components/standard/DefaultScreenLayout";
 import DefaultSelectOne from "../../components/standard/DefaultSelectOne";
 import Header from "../../components/standard/Header";
 import TablePaginator from "../../components/standard/TablePaginator";
-import { ArrowLeftIcon, CheckboxCircleIcon, ChevronDownIcon, CompanyIcon, ConciergeIcon, ConnectPeopleIcon, DeliveryTruckIcon, DollarSymbolIcon, FairIcon, GearIcon, InfoIcon, NewReleaseIcon, PersonOwnerIcon, PlusIcon, POSIcon } from "../../components/svg/SvgIcons";
-import { useAppContext } from "../../context/appContext";
-import { AcquirerConfig } from "../../model/AcquirerConfig";
-import { Address } from "../../model/Address";
-import { Company } from "../../model/Company";
-import { Fair } from "../../model/Fair";
-import { Owner } from "../../model/Owner";
-import { User } from "../../model/User";
-import { handleCreateAcquirer, handleCreateCompany, handleFetchAcquirerCompanyData, handleFetchCompanyData } from "../../repositories/company.repository";
-import { fecthExternalCitiesByState, handleFetchExternalCnpjData } from "../../repositories/external.repository";
-import { createFair, fecthFairsBy } from "../../repositories/fair.repository";
-import { getUserData } from "../../repositories/user.repository";
-import { handleErrorToast, handleWarnToast } from "../../utils/toast";
-import { EnumAccountTypeType, EnumAcquirerConfigStatus, EnumCompanyScreen, EnumExpirationTime, EnumLoadingTextType, EnumPlanStatus, EnumPlanType, EnumRegisterCompanyStep, EnumScreen, EnumTransferIntervalType, EnumWeekDaysType, PlanDTO } from "../../utils/types";
-import { equalsEnum, equalsStr, formatCNPJInput, formatCPFInput, formatCurrency, formatDateDDMMYYYYInput, formatHHmmInput, formatPhoneInput, generateUUID, getAccountStatusDescription, getAccountType, getToken, getTransferIntervalByString, getTransferIntervalDescription, getWeekDayByString, getWeekDayDescription, handleChange, handleChangeValue, handleCurrencyChange, isValidHour, isValidObjectRequiredFields, isValidPositiveStrNumber, isValidString, onlyNumbers, siglasUF, validateCNPJ, validateCPF, validateEmail, validatePhone, validateZipCode, weekDayMap } from "../../utils/util";
-import useMiddleware from "../../viewmodel/middleware";
+import { ArrowLeftIcon, CheckboxCircleIcon, ChevronDownIcon, ConciergeIcon, ConnectPeopleIcon, DeliveryTruckIcon, GearIcon, InfoIcon, NewReleaseIcon, PlusIcon, POSIcon } from "../../components/svg/SvgIcons";
+import { EnumAcquirerConfigStatus, EnumCompanyScreen, EnumPlanType, EnumRegisterCompanyStep, EnumScreen, EnumTransferIntervalType, EnumWeekDaysType } from "../../utils/types";
+import { equalsEnum, formatCNPJInput, formatCPFInput, formatCurrency, formatDateDDMMYYYYInput, formatHHmmInput, formatPhoneInput, getAccountStatusDescription, getAccountType, getTransferIntervalDescription, getWeekDayDescription, handleChange, handleCurrencyChange, isValidPositiveStrNumber, isValidString, siglasUF, validateCPF, validateEmail, validatePhone, weekDayMap } from "../../utils/util";
+import useCompanyViewModel from "../../viewmodel/company/view.model";
+import CompanyManagementNav from "../../components/company/CompanyManagementNav";
 
 export default function CompanyView() {
-    const { user, handleUpdateCompany } = useAppContext();
-    const { isAuth, verifyUserAuth } = useMiddleware(EnumScreen.COMPANY);
-    const [screenProcess, setScreenProcess] = useState<EnumCompanyScreen>();
-    const [isClient, setIsClient] = useState(false);
-    const [company, setCompany] = useState<Company>();
-    const [companyDocument, setCompanyDocument] = useState<string>("");
-    const [owner, setOwner] = useState<Owner>();
-    const [acquirerConfig, setAcquirerConfig] = useState<AcquirerConfig>();
-    const [basicInfoFormScreen, setBasicInfoFormScreen] = useState(false);
-    const [ownerInfoFormScreen, setOwnerInfoFormScreen] = useState(false);
-    const [useUserInfo, setUseUserInfo] = useState(true);
-    const [registerStep, setRegisterStep] = useState(EnumRegisterCompanyStep.REGISTER_COMPANY);
-    const [stepsTaken, setStepsTaken] = useState<Array<EnumRegisterCompanyStep>>([EnumRegisterCompanyStep.REGISTER_COMPANY]);
-    const [selectedPlan, setSelectedPlan] = useState<EnumPlanType>();
-    const [fairs, setFairs] = useState<Array<Fair>>();
-    const [fairsFilter, setFairsFilter] = useState({ state: "", city: "", citiesByState: [""] });
-    const [showAllTaxes, setShowAllTaxes] = useState(false);
-    const [registerFair, setRegisterFair] = useState<Fair>()
-    const [loadingText, setLoadingText] = useState<EnumLoadingTextType | undefined>(EnumLoadingTextType.DEFAULT_LOADING_TEXT);
-    const [companyDataView, setCompanyDataView] = useState(true);
-    const [plan, setPlan] = useState<PlanDTO>();
-
-    useEffect(() => {
-        setIsClient(true);
-
-        (async () => verifyUserAuth())();
-
-        if (!loadingText) {
-            setLoadingText(EnumLoadingTextType.DEFAULT_LOADING_TEXT);
-        }
-
-        if (user?.company && user?.company.id) {
-            const token = getToken();
-
-            if (token) {
-                handleFetchCompanyData(user.company.id, token)
-                    .then(res => {
-                        setCompany(Company.fromEncryptedData(res));
-
-                        setCompanyDataView(res.organization);
-                    })
-                    .catch(() => handleErrorToast("Erro ao buscar empresa!"))
-                    .finally(() => {
-                        setScreenProcess(EnumCompanyScreen.COMPANY);
-
-                        setLoadingText(undefined);
-                    });
-            }
-
-            return;
-        }
-
-        setLoadingText(undefined)
-        setScreenProcess(EnumCompanyScreen.FIRST_REGISTER);
-    }, [user]);
-
-    useEffect(() => {
-        if (equalsEnum(screenProcess, EnumCompanyScreen.BANK_ACCOUNT)) {
-
-            if (!company?.hasAcquirerConfig) {
-                let document = isIndividualCompany() ? formatCPFInput(owner?.document!) : formatCNPJInput(company?.document!);
-
-                setAcquirerConfig(AcquirerConfig.defaultWithDocumentBank(document!, bankCodes[0].nome));
-
-                return;
-            }
-
-            if (company?.id
-                && acquirerConfig === undefined) {
-                let token = getToken();
-
-                setLoadingText(EnumLoadingTextType.FETCHING_ACQUIRER_CONFIG_ACCOUNT);
-
-                if (token) {
-                    handleFetchAcquirerCompanyData(company?.id, token)
-                        .then(res => {
-                            setAcquirerConfig(res);
-
-                            setLoadingText(undefined);
-                        })
-                        .catch(err => {
-                            console.error(err);
-
-                            setLoadingText(EnumLoadingTextType.FETCHING_ACQUIRER_ERROR);
-                        })
-                }
-            }
-        }
-    }, [screenProcess]);
-
-    function isSelectedScreen(screen: EnumCompanyScreen) {
-        return equalsEnum(screenProcess, screen)
-    }
-
-    function handleAutonomousFlow() {
-        setCompany(new Company({
-            organization: false, address: undefined, phone: undefined, companyName: undefined,
-            annualRevenue: undefined, document: undefined, email: undefined
-        }));
-
-        setCompanyDocument("");
-
-        handleUpdateView(EnumRegisterCompanyStep.REGISTER_OWNER);
-    }
-
-    function handleCompanyGoBack() {
-        setCompany(undefined);
-
-        setBasicInfoFormScreen(false);
-    }
-
-    function handleOwnerGoBack() {
-        setOwner(undefined);
-
-        setOwnerInfoFormScreen(false);
-    }
-
-    function handleConsultCompanyData() {
-
-        if (validateCNPJ(companyDocument)) {
-            handleFetchExternalCnpjData(onlyNumbers(companyDocument))
-                .then(setCompany)
-                .then(() => {
-                    if (owner && owner.document) {
-                        setOwner(undefined);
-                    }
-
-                    setBasicInfoFormScreen(true);
-                })
-                .catch(console.error);
-
-            return;
-        }
-
-        handleWarnToast("Necessário informar um CNPJ valido.")
-    }
-
-    function handleSelectInfoOwnerFlow() {
-
-        if (isIndividualCompany()) {
-            handleChangeValue("", "tradingName", setCompany);
-        }
-
-        if (useUserInfo) {
-            const token = getToken();
-
-            if (token) {
-                getUserData(token)
-                    .then(res => {
-                        var userData = User.fromEncryptedData(res);
-
-                        if (userData.address?.id) {
-                            userData.address.id = undefined;
-                        }
-
-                        setOwner(Owner.fromUser(userData));
-                    })
-                    .catch(console.error);
-            }
-
-        } else {
-            setOwner(new Owner({ address: new Address({ state: undefined }) }));
-        }
-
-        setOwnerInfoFormScreen(true);
-    }
-
-    function handleListFairs(city?: string, state?: string) {
-        const token = getToken();
-
-        if (token) {
-            fecthFairsBy(state ?? fairsFilter.state, city ?? fairsFilter.city, token)
-                .then(setFairs)
-                .catch(() => handleErrorToast("Erro ao buscar feiras, tente novamente."));
-        }
-
-    }
-
-    function handleSelectUF(state: string, defaultCity?: string) {
-        setFairsFilter({
-            state,
-            city: defaultCity ?? "",
-            citiesByState: []
-        })
-
-        fecthExternalCitiesByState(state)
-            .then(res => {
-                setFairsFilter(prev => {
-                    return {
-                        ...prev,
-                        city: defaultCity ?? "Selecione",
-                        citiesByState: res.map(item => item.nome).sort()
-                    }
-                })
-            })
-            .catch(console.error);
-    }
-
-    function handleSelectCityFetchFairs(city: string, state?: string) {
-        handleChangeValue(city, "city", setFairsFilter);
-
-        handleListFairs(city, state);
-    }
-
-    function handleChangeFairCompany(fair: Fair) {
-
-        let newFairs = Array.from(company?.fairs ?? []);
-
-        if (company?.fairs?.includes(fair)) {
-            newFairs = newFairs.filter(item => item !== fair);
-        } else {
-            newFairs.push(fair);
-        }
-
-        handleChangeValue(newFairs, "fairs", setCompany);
-    }
-
-    function handleChangeFairWeekDay(weekDay: string) {
-
-        let daysOfWeek = Array.from(registerFair?.daysOfWeek ?? []);
-
-        if (registerFair?.daysOfWeek?.includes(weekDay)) {
-            daysOfWeek = daysOfWeek.filter(item => item !== weekDay);
-        } else {
-            daysOfWeek.push(weekDay);
-        }
-
-        handleChangeValue(daysOfWeek, "daysOfWeek", setRegisterFair);
-    }
-
-    function handleStartCreateFair() {
-        setRegisterFair(new Fair({ address: new Address({ state: fairsFilter?.state, city: fairsFilter?.city }) }));
-    }
-
-    function handleCreateFair() {
-        const payload = new Fair(registerFair);
-
-        payload.parseDays();
-
-        const token = getToken();
-
-        if (token) {
-            createFair(payload, token)
-                .then(() => {
-                    const updatedFairs = Array.from(fairs ?? []);
-
-                    //Para feiras temp
-                    payload.id = generateUUID();
-
-                    updatedFairs.push(payload);
-
-                    setFairs(updatedFairs);
-                })
-                .catch(console.error)
-                .finally(() => setRegisterFair(undefined))
-        }
-    }
-
-    function handleUpdateView(step: EnumRegisterCompanyStep) {
-        const newArray = [EnumRegisterCompanyStep.REGISTER_COMPANY];
-
-        switch (step) {
-            case EnumRegisterCompanyStep.REGISTER_COMPANY:
-                setStepsTaken(newArray);
-                setRegisterStep(step);
-                break;
-            case EnumRegisterCompanyStep.REGISTER_OWNER:
-                newArray.push(step);
-                setStepsTaken(newArray);
-                setRegisterStep(step);
-                break;
-            case EnumRegisterCompanyStep.FAIRS:
-                newArray.push(EnumRegisterCompanyStep.REGISTER_OWNER, step);
-                setStepsTaken(newArray);
-                setRegisterStep(step);
-                break;
-            case EnumRegisterCompanyStep.SELECT_PLAN:
-                newArray.push(EnumRegisterCompanyStep.REGISTER_OWNER,
-                    EnumRegisterCompanyStep.FAIRS, step);
-                setStepsTaken(newArray);
-                setRegisterStep(step);
-                break;
-            default:
-                break;
-        }
-    }
-
-    function addStepTaken(step: EnumRegisterCompanyStep) {
-        if (!stepsTaken.includes(step)) {
-            const newSteps = Array.from(stepsTaken);
-
-            newSteps.push(step);
-
-            setStepsTaken(newSteps);
-        }
-    }
-
-    function handleNextRegisterStep() {
-
-        if (registerFair) {
-            return handleCreateFair();
-        }
-
-        switch (registerStep) {
-            case EnumRegisterCompanyStep.REGISTER_COMPANY:
-                setRegisterStep(EnumRegisterCompanyStep.REGISTER_OWNER);
-                addStepTaken(EnumRegisterCompanyStep.REGISTER_OWNER);
-                break;
-            case EnumRegisterCompanyStep.REGISTER_OWNER:
-                if (isIndividualCompany()) {
-                    handleSelectUF(owner?.address?.state!, owner?.address?.city!);
-                    handleSelectCityFetchFairs(owner?.address?.city!, company?.address?.state!);
-                } else {
-                    handleSelectUF(company?.address?.state!, company?.address?.city!);
-                    handleSelectCityFetchFairs(company?.address?.city!, company?.address?.state!);
-                }
-
-                setRegisterStep(EnumRegisterCompanyStep.FAIRS);
-                addStepTaken(EnumRegisterCompanyStep.FAIRS);
-                break;
-            case EnumRegisterCompanyStep.FAIRS:
-                setRegisterStep(EnumRegisterCompanyStep.SELECT_PLAN);
-                addStepTaken(EnumRegisterCompanyStep.SELECT_PLAN);
-                break;
-            default:
-                break;
-        }
-    }
-
-    function validateDisable(step?: EnumRegisterCompanyStep) {
-        switch (step ?? registerStep) {
-            case EnumRegisterCompanyStep.REGISTER_COMPANY:
-                return !isValidCompanyData() && !!registerFair;
-            case EnumRegisterCompanyStep.REGISTER_OWNER:
-                return !isValidOwnerData();
-            case EnumRegisterCompanyStep.FAIRS:
-                return registerFair ? !isValidFairData() : !(company?.fairs && company?.fairs?.length! > 0);
-            case EnumRegisterCompanyStep.SELECT_PLAN:
-                return !selectedPlan;
-            default:
-                break;
-        }
-    }
-
-    function isValidCompanyData() {
-        return (isValidObjectRequiredFields(company, ["imageUrl", "fairs"])
-            && isValidObjectRequiredFields(company?.address, ["number", "complement"])
-            && validateZipCode(company?.address?.zipCode ?? "")
-            && validateEmail(company?.email ?? "")
-            && validateCNPJ(company?.document ?? "")
-            && validatePhone(company?.phone ?? "")
-            && isValidPositiveStrNumber(company?.annualRevenue?.toString())
-            || isIndividualCompany());
-    }
-
-    function isValidOwnerData() {
-        return isValidObjectRequiredFields(owner)
-            && isValidObjectRequiredFields(owner?.address, ["number", "complement", "id"])
-            && validateZipCode(owner?.address?.zipCode ?? "")
-            && validateEmail(owner?.email ?? "")
-            && validateCPF(owner?.document ?? "")
-            && validatePhone(owner?.phone ?? "")
-            && isValidPositiveStrNumber(owner?.monthlyIncome?.toString())
-            && owner?.birthdate?.length == 10;
-    }
-
-    function isValidFairData() {
-        return isValidObjectRequiredFields(registerFair, ["id"])
-            && isValidObjectRequiredFields(registerFair?.address, ["number", "complement"])
-            && validateZipCode(registerFair?.address?.zipCode ?? "")
-            && isValidHour(registerFair?.startAt!)
-            && isValidHour(registerFair?.endAt!)
-            && registerFair!.daysOfWeek.length > 0;
-    }
-
-    function isIndividualCompany() {
-        return !company?.organization;
-    }
-
-    function renderBotomButton() {
-        return (![EnumRegisterCompanyStep.REGISTER_COMPANY, EnumRegisterCompanyStep.REGISTER_OWNER].includes(registerStep)
-            || (equalsEnum(registerStep, EnumRegisterCompanyStep.REGISTER_COMPANY) && basicInfoFormScreen)
-            || (equalsEnum(registerStep, EnumRegisterCompanyStep.REGISTER_OWNER) && ownerInfoFormScreen));
-    }
-
-    function validFairHour(hour: string) {
-        const isValid = isValidHour(hour);
-
-        if (registerFair?.startAt
-            && registerFair?.endAt
-            && isValidHour(registerFair.startAt)
-            && isValidHour(registerFair.endAt)) {
-            return parseInt(onlyNumbers(registerFair.endAt)) > parseInt(onlyNumbers(registerFair?.startAt));
-        }
-
-        return isValid
-    }
-
-    function createCompany() {
-        const token = getToken();
-
-        if (token && company && owner && fairs) {
-            const fairsId = fairs
-                .map(item => item.id)
-                .filter((id): id is string => id !== null && id !== undefined);
-
-            company.owner = owner!;
-            company.fairsId = fairsId;
-
-            company.plan = {
-                type: EnumPlanType.TRIAL,
-            };
-
-            console.log(company);
-            
-
-            handleCreateCompany(company, token)
-                .then(res => {
-                    handleUpdateCompany(res)
-
-                    setScreenProcess(EnumCompanyScreen.COMPANY);
-                })
-                .catch(console.error);
-        }
-    }
-
-    function createAcquirerConfig() {
-        const token = getToken();
-
-        if (token && acquirerConfig) {
-            let payload = {
-                ...acquirerConfig,
-                bankAccount: {
-                    ...acquirerConfig.bankAccount,
-                    holderDocument: onlyNumbers(acquirerConfig.bankAccount!.holderDocument!),
-                    bank: bankCodes.find(bank => bank.nome === acquirerConfig.bankAccount!.bank)?.codigo
-                }
-            } as AcquirerConfig;
-
-            handleCreateAcquirer(payload, company?.id!, token)
-                .then(res => {
-                    handleChangeValue(res.status, "status", setAcquirerConfig);
-
-                    handleChangeValue(true, "company.hasAcquirerConfig", setCompany);
-                })
-                .catch(console.error);
-        }
-    }
-
-    function defineBank(bankName: string) {
-        const bank = bankCodes.find(bank => bank.nome === bankName);
-
-        if (bank) {
-            setAcquirerConfig((prevState: any) => {
-                return {
-                    ...prevState,
-                    ["bankAccount"]: {
-                        ...prevState["bankAccount"],
-                        bank: bankName
-                    },
-                };
-            });
-        }
-    }
-
-    function defineAccountType(val: string) {
-        let accType = equalsStr(val, "Conta Corrente") ? EnumAccountTypeType.CHECKING : EnumAccountTypeType.SAVINGS;
-
-        setAcquirerConfig((prevState: any) => {
-            return {
-                ...prevState,
-                ["bankAccount"]: {
-                    ...prevState["bankAccount"],
-                    type: accType
-                },
-            };
-        });
-    }
-
-    function defineWeekDay(val: string) {
-        setAcquirerConfig((prevState: any) => {
-            return {
-                ...prevState,
-                ["transferConfig"]: {
-                    ...prevState["transferConfig"],
-                    transferDay: getWeekDayByString(val)
-                },
-            };
-        });
-    }
-
-    function defineTransferInterval(val: string) {
-        let enumTransferInterval = getTransferIntervalByString(val);
-
-        setAcquirerConfig((prevState: any) => {
-            return {
-                ...prevState,
-                ["transferConfig"]: {
-                    ...prevState["transferConfig"],
-                    transferInterval: enumTransferInterval,
-                    transferDay: equalsEnum(enumTransferInterval, EnumTransferIntervalType.WEEKLY) ? getWeekDayByString(val) : undefined
-                },
-            };
-        });
-    }
-
-    function enableAnticipation(val: string) {
-        let status = equalsStr(val, "ATIVADA");
-
-        setAcquirerConfig((prevState: any) => {
-            return {
-                ...prevState,
-                ["anticipationConfig"]: {
-                    ...prevState["anticipationConfig"],
-                    enabled: status
-                },
-            };
-        });
-    }
-
-    function isValidBankAccountData() {
-        return acquirerConfig?.bankAccount?.branchNumber
-            && acquirerConfig?.bankAccount?.accountNumber
-            && acquirerConfig?.bankAccount?.accountCheckDigit
-            && acquirerConfig?.bankAccount?.bank
-            && acquirerConfig?.bankAccount?.holderDocument
-            && ((acquirerConfig?.transferConfig?.enabled
-                && (equalsEnum(acquirerConfig?.transferConfig?.transferInterval, EnumTransferIntervalType.DAILY)
-                    || (acquirerConfig?.transferConfig?.transferDay && acquirerConfig?.transferConfig?.transferInterval)))
-                || !acquirerConfig.transferConfig?.enabled)
-    }
+    const {
+        user,
+        isAuth,
+        company,
+        owner,
+        acquirerConfig,
+        screenProcess,
+        isClient,
+        companyDocument,
+        basicInfoFormScreen,
+        ownerInfoFormScreen,
+        useUserInfo,
+        registerStep,
+        stepsTaken,
+        selectedPlan,
+        fairs,
+        fairsFilter,
+        showAllTaxes,
+        registerFair,
+        loadingText,
+        companyDataView,
+        plan,
+
+        // Ações de navegação e fluxo
+        handleUpdateView,
+        handleNextRegisterStep,
+        addStepTaken,
+        handleAutonomousFlow,
+        handleCompanyGoBack,
+        handleOwnerGoBack,
+
+        // Empresa
+        handleConsultCompanyData,
+        isValidCompanyData,
+        isIndividualCompany,
+
+        // Owner
+        handleSelectInfoOwnerFlow,
+        isValidOwnerData,
+
+        // Feiras
+        handleListFairs,
+        handleSelectUF,
+        handleSelectCityFetchFairs,
+        handleChangeFairCompany,
+        handleChangeFairWeekDay,
+        handleStartCreateFair,
+        handleCreateFair,
+        isValidFairData,
+        validFairHour,
+
+        // Botão e controle de step
+        renderBotomButton,
+        validateDisable,
+
+        // Criação
+        createCompany,
+        createAcquirerConfig,
+
+        // Configurações financeiras
+        defineBank,
+        defineAccountType,
+        defineWeekDay,
+        defineTransferInterval,
+        enableAnticipation,
+        isValidBankAccountData,
+        setScreenProcess, 
+        isSelectedScreen, 
+    } = useCompanyViewModel();
 
     return (
         (isClient && isAuth) &&
@@ -569,78 +96,19 @@ export default function CompanyView() {
                 <div className="flex flex-col md:h-full">
                     {!user?.company ?
                         <>
-                            <DefaultHeaderTitle title="Finalize o cadastro da empresa🏪"
-                                content="Tenha acesso ao sistema completo após finalizar seu cadastro e definir seu plano." />
-                            <div className="flex p-0.5">
-                                <button disabled={!!registerFair || validateDisable(EnumRegisterCompanyStep.REGISTER_COMPANY)}
-                                    className="flex flex-col w-1/4 items-center gap-1"
-                                    title={!!registerFair ? "Finalize o cadastro da feira" : "Informações do cadastro da empresa"}
-                                    onClick={() => handleUpdateView(EnumRegisterCompanyStep.REGISTER_COMPANY)}>
-                                    <CompanyIcon />
-                                    <p className="hidden md:flex text-sm">
-                                        Cadastro empresa
-                                    </p>
-                                    <hr className="h-1 bg-secondary rounded-md w-full" />
-                                </button>
-                                <button disabled={!!registerFair || validateDisable(EnumRegisterCompanyStep.REGISTER_OWNER)}
-                                    className="flex flex-col w-1/4 items-center gap-1"
-                                    title={!!registerFair ? "Finalize o cadastro da feira" : "Informações do cadastro do dono da empresa"}
-                                    onClick={() => handleUpdateView(EnumRegisterCompanyStep.REGISTER_OWNER)}>
-                                    <PersonOwnerIcon />
-                                    <p className="hidden md:flex text-sm">
-                                        Dono empresa
-                                    </p>
-                                    <hr className={`h-1 w-full bg-primary-light rounded-md
-                                        ${stepsTaken.includes(EnumRegisterCompanyStep.REGISTER_OWNER) && 'bg-secondary'}`} />
-                                </button>
-                                <button disabled={validateDisable(EnumRegisterCompanyStep.FAIRS)}
-                                    className="flex flex-col w-1/4 items-center gap-1"
-                                    onClick={() => handleUpdateView(EnumRegisterCompanyStep.FAIRS)}>
-                                    <FairIcon />
-                                    <p className="hidden md:flex text-sm">
-                                        Seleção feiras
-                                    </p>
-                                    <hr className={`h-1 w-full bg-primary-light rounded-md
-                                        ${stepsTaken.includes(EnumRegisterCompanyStep.FAIRS) && 'bg-secondary'}`} />
-                                </button>
-                                <button disabled={!!registerFair || validateDisable(EnumRegisterCompanyStep.SELECT_PLAN)}
-                                    title={!!registerFair ? "Finalize o cadastro da feira" : "Informações do plano"}
-                                    className="flex flex-col w-1/4 items-center gap-1"
-                                    onClick={() => handleUpdateView(EnumRegisterCompanyStep.SELECT_PLAN)}>
-                                    <DollarSymbolIcon />
-                                    <p className="hidden md:flex text-sm">
-                                        Seleção do plano
-                                    </p>
-                                    <hr className={`h-1 w-full bg-primary-light rounded-md
-                                        ${stepsTaken.includes(EnumRegisterCompanyStep.SELECT_PLAN) && 'bg-secondary'}`} />
-                                </button>
-                            </div>
+                            <CompanyRegistrationSteps
+                                registerFair={!!registerFair}
+                                stepsTaken={stepsTaken}
+                                handleUpdateView={handleUpdateView}
+                                validateDisable={validateDisable}
+                            />
                         </>
                         :
                         <>
-                            <DefaultHeaderTitle title="Gerencie aqui suas configurações da empresa🏪"
-                                content="Aqui você configura seus dados, feiras que participa, conta bancária e suas maquininhas" />
-                            <nav className="flex w-fit gap-8 border-b border-b-primary pb-0.5 mb-10 self-center pr-8 md:self-start md:mb-8">
-                                <button onClick={() => setScreenProcess(EnumCompanyScreen.COMPANY)}
-                                    className={`text-secondary text-xs pl-8 ${isSelectedScreen(EnumCompanyScreen.COMPANY) ? "font-bold" : "hover:text-secondary-light"}`}>
-                                    Cadastro
-                                </button>
-                                <button onClick={() => setScreenProcess(EnumCompanyScreen.FAIRS)}
-                                    title={"Realize o gerenciamento da feira"}
-                                    className={`text-secondary text-xs ${isSelectedScreen(EnumCompanyScreen.FAIRS) ? "font-bold" : "hover:text-secondary-light"}`}>
-                                    Feiras
-                                </button>
-                                <button onClick={() => setScreenProcess(EnumCompanyScreen.BANK_ACCOUNT)}
-                                    title={"Realize o gerenciamento da conta"}
-                                    className={`text-secondary text-xs ${isSelectedScreen(EnumCompanyScreen.BANK_ACCOUNT) ? "font-bold" : "hover:text-secondary-light"}`}>
-                                    Conta
-                                </button>
-                                <button onClick={() => setScreenProcess(EnumCompanyScreen.POS)}
-                                    title={"Realize o gerenciamento das maquininhas"}
-                                    className={`text-secondary text-xs ${isSelectedScreen(EnumCompanyScreen.POS) ? "font-bold" : "hover:text-secondary-light"}`}>
-                                    Maquininhas
-                                </button>
-                            </nav>
+                            <CompanyManagementNav
+                                setScreenProcess={setScreenProcess}
+                                isSelectedScreen={isSelectedScreen}
+                            />
                         </>
                     }
                     {equalsEnum(screenProcess, EnumCompanyScreen.FIRST_REGISTER) &&
@@ -1003,7 +471,7 @@ export default function CompanyView() {
                                 }
                                 {equalsEnum(registerStep, EnumRegisterCompanyStep.SELECT_PLAN) &&
                                     <div className="w-full mt-8 flex flex-col gap-12 items-center justify-center lg:h-full lg:flex-row md:gap-14">
-                                        <button onClick={() => setSelectedPlan(EnumPlanType.FREE_TEST_PLAN)}
+                                        <button onClick={() => setSelectedPlan(planOptions[EnumPlanType.FREE_TEST_PLAN])}
                                             className={`h-2/3 md:h-fit flex flex-col w-full md:w-96 border-2 border-second-light rounded-md p-4 shadow-md 
                                                 ${equalsEnum(selectedPlan, EnumPlanType.FREE_TEST_PLAN) && 'border-tertiary'}`}>
                                             <h2 className="text-center font-semibold text-xl underline lg:mt-24">
@@ -1036,7 +504,7 @@ export default function CompanyView() {
                                                 </li>
                                             </ul>
                                         </button>
-                                        <button onClick={() => setSelectedPlan(EnumPlanType.POS_PLAN)}
+                                        <button onClick={() => setSelectedPlan(planOptions[EnumPlanType.POS_PLAN])}
                                             className={`h-fit relative flex flex-col w-full md:w-fit border-2 rounded-md p-4
                                             ${equalsEnum(selectedPlan, EnumPlanType.POS_PLAN)
                                                     ? 'border-tertiary shadow-md'
@@ -1093,7 +561,7 @@ export default function CompanyView() {
                                                 </li>
                                             </ul>
                                         </button>
-                                        <button onClick={() => setSelectedPlan(EnumPlanType.MONTHLY_PLAN)}
+                                        <button onClick={() => setSelectedPlan(planOptions[EnumPlanType.MONTHLY_PLAN])}
                                             className={`h-2/3 md:h-fit flex flex-col w-full md:w-96 border-2 border-second-light rounded-md p-4 shadow-md 
                                                 ${equalsEnum(selectedPlan, EnumPlanType.MONTHLY_PLAN) && 'border-tertiary'}`}>
                                             <h2 className="text-center font-semibold text-xl underline h-12 lg:mt-24">

@@ -555,4 +555,74 @@ export default function useCompanyViewModel() {
                 || !acquirerConfig.transferConfig?.enabled)
     }
 
+    return {
+        setScreenProcess, 
+        isSelectedScreen, 
+        // Estados
+        user,
+        isAuth,
+        company,
+        owner,
+        acquirerConfig,
+        screenProcess,
+        isClient,
+        companyDocument,
+        basicInfoFormScreen,
+        ownerInfoFormScreen,
+        useUserInfo,
+        registerStep,
+        stepsTaken,
+        selectedPlan,
+        fairs,
+        fairsFilter,
+        showAllTaxes,
+        registerFair,
+        loadingText,
+        companyDataView,
+        plan,
+
+        // Ações de navegação e fluxo
+        handleUpdateView,
+        handleNextRegisterStep,
+        addStepTaken,
+        handleAutonomousFlow,
+        handleCompanyGoBack,
+        handleOwnerGoBack,
+
+        // Empresa
+        handleConsultCompanyData,
+        isValidCompanyData,
+        isIndividualCompany,
+
+        // Owner
+        handleSelectInfoOwnerFlow,
+        isValidOwnerData,
+
+        // Feiras
+        handleListFairs,
+        handleSelectUF,
+        handleSelectCityFetchFairs,
+        handleChangeFairCompany,
+        handleChangeFairWeekDay,
+        handleStartCreateFair,
+        handleCreateFair,
+        isValidFairData,
+        validFairHour,
+
+        // Botão e controle de step
+        renderBotomButton,
+        validateDisable,
+
+        // Criação
+        createCompany,
+        createAcquirerConfig,
+
+        // Configurações financeiras
+        defineBank,
+        defineAccountType,
+        defineWeekDay,
+        defineTransferInterval,
+        enableAnticipation,
+        isValidBankAccountData,
+    }
 }

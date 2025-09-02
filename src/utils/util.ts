@@ -15,7 +15,7 @@ import {
   EnumAccountTypeType,
   EnumAcquirerConfigStatus,
   EnumOrderStatus,
-  EnumProductType,
+  EnumProductCategory,
   EnumScreenStep,
   EnumTransferIntervalType,
   EnumWeekDaysType,
@@ -127,6 +127,8 @@ export function maskDocument(document: string) {
 }
 
 export function formatCPFInput(value: string): string {
+  console.log(value);
+  
   const cleaned = value.replace(/\D/g, "");
 
   if (cleaned.length <= 3) {
@@ -673,13 +675,13 @@ export function getOrderStatusColor(status: EnumOrderStatus) {
   }
 }
 
-export function getProductColor(status: EnumProductType) {
+export function getProductColor(status: EnumProductCategory) {
   switch (status) {
-    case EnumProductType.VERDURA:
+    case EnumProductCategory.VERDURA:
       return "bg-primary bg-opacity-20 text-secondary";
-    case EnumProductType.LEGUME:
+    case EnumProductCategory.LEGUME:
       return "bg-blue-500 bg-opacity-20 text-blue-600";
-    case EnumProductType.FRUTA:
+    case EnumProductCategory.FRUTA:
       return "bg-tertiary bg-opacity-20 text-tertiary";
   }
 }
