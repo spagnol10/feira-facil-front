@@ -35,8 +35,8 @@ export default function ProductView() {
         <DefaultScreenLayout screen={EnumScreen.PRODUCTS}>
           <div className="flex flex-col md:h-full">
             <DefaultHeaderTitle
-              title="Gerencie seus produtos🥕"
-              content="Aqui você cadastra, edita e inativa seus produtos"
+              title="Gerencie seus produtos"
+              content="Aqui você cadastra e edita seus produtos"
             />
 
             {productToEdit ? (

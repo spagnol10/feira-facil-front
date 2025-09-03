@@ -9,7 +9,11 @@ import {
   EnumMeasurementUnit,
   EnumProductCategory,
 } from "../../utils/types";
-import { handleChange, handleChangeValue } from "../../utils/util";
+import {
+  formatCurrency,
+  handleChange,
+  handleChangeValue,
+} from "../../utils/util";
 import { Product } from "../../model/Product";
 import ProductImageUploader from "../image/ProductImageUploader";
 
@@ -33,7 +37,7 @@ export default function ProductForm({
   updateProduct,
 }: ProductFormProps) {
   return (
-    <div className="w-full max-w-5xl max-w-full bg-white p-6 md:p-10 rounded-2xl shadow-md">
+    <div className="w-full max-w-full bg-white p-6 md:p-10 rounded-2xl shadow-md">
       <button
         onClick={() => setProductToEdit(undefined)}
         className="flex items-center gap-2 text-gray-600 hover:text-dark-color transition"
@@ -126,16 +130,36 @@ export default function ProductForm({
 
         <CustomInput
           id="costPrice"
-          value={productToEdit.costPrice?.toString() ?? ""}
+          value={formatCurrency(productToEdit.costPrice ?? 0)}
           inputHeaderText="Preço de custo"
-          onChange={(e) => handleChange(e, setProductToEdit)}
+          onChange={(e) => {
+            const rawValue = e.target.value.replace(/[^\d]/g, "");
+            const numericValue = Number(rawValue) / 100;
+
+            setProductToEdit(
+              new Product({
+                ...productToEdit,
+                costPrice: numericValue,
+              })
+            );
+          }}
         />
 
         <CustomInput
           id="sellingPrice"
-          value={productToEdit.sellingPrice?.toString() ?? ""}
+          value={formatCurrency(productToEdit.sellingPrice ?? 0)}
           inputHeaderText="Preço de venda"
-          onChange={(e) => handleChange(e, setProductToEdit)}
+          onChange={(e) => {
+            const rawValue = e.target.value.replace(/[^\d]/g, "");
+            const numericValue = Number(rawValue) / 100;
+
+            setProductToEdit(
+              new Product({
+                ...productToEdit,
+                sellingPrice: numericValue,
+              })
+            );
+          }}
         />
 
         <div className="flex items-center gap-4">
