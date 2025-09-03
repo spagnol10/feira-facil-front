@@ -59,13 +59,13 @@ export default function StockForm({
             setMovementToEdit(
               new StockMovement({
                 ...movementToEdit,
-                product: products.find((p) => p.name === val), 
+                product: products.find((p) => p.name === val),
               })
             )
           }
           inputHeaderText="Produto"
           optionValue={movementToEdit.product?.name ?? ""}
-          options={products.map((p) => p.name)} 
+          options={products.map((p) => p.name)}
         />
 
         <DefaultSelectOne
@@ -96,7 +96,6 @@ export default function StockForm({
       {movementToEdit.product && (
         <div className="mt-8 p-4 md:p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-4">
-            {/* Imagem */}
             <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
               <Image
                 src={getProductImage(movementToEdit.product?.imageUrl)!}
@@ -107,7 +106,6 @@ export default function StockForm({
               />
             </div>
 
-            {/* Informações */}
             <div className="flex-1 flex flex-col justify-between gap-1">
               <h4 className="text-lg font-semibold text-gray-800 truncate">
                 {movementToEdit.product?.name}

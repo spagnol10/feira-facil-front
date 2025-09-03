@@ -44,7 +44,7 @@ export default function StockWebList({
           <tbody>
             {movements.map((item) => (
               <tr key={item.id} className="h-16 odd:bg-gray-50 even:bg-white hover:bg-gray-100 transition-colors">
-                {/* Produto */}
+
                 <td className="flex justify-center items-center gap-2 px-2 py-1">
                   <Image
                     src={getProductImage(item.product?.id ?? "") ?? "/placeholder-image.png"}
@@ -56,7 +56,7 @@ export default function StockWebList({
                   <span className="text-sm text-gray-700">{item.product?.name}</span>
                 </td>
 
-                {/* Tipo E/S */}
+
                 <td className="text-center px-2 py-1">
                   <span
                     className={`p-0.5 px-3 rounded-2xl w-fit text-sm whitespace-nowrap ${
@@ -69,19 +69,15 @@ export default function StockWebList({
                   </span>
                 </td>
 
-                {/* Tipo movimento */}
+
                 <td className="text-center px-2 py-1 text-gray-700 text-sm">{item.movementType}</td>
 
-                {/* Quantidade */}
                 <td className="text-center px-2 py-1 text-gray-700 text-sm">{item.quantity}</td>
 
-                {/* Saldo */}
                 <td className="text-center px-2 py-1 text-gray-700 text-sm">{item.balance}</td>
 
-                {/* Data movimento */}
                 <td className="text-center px-2 py-1 text-gray-700 text-sm">{item.movementDate}</td>
 
-                {/* Botão detalhes */}
                 <td className="text-center px-2 py-1">
                   <button
                     onClick={() => setMovementToEdit(item)}
@@ -96,7 +92,6 @@ export default function StockWebList({
           </tbody>
         </table>
 
-        {/* Paginator */}
         <div className="mt-4 hidden md:flex justify-center">
           <TablePaginator
             currentPage={currentPage}

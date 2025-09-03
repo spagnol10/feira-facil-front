@@ -36,7 +36,7 @@ export default function StockMobileList({
           </button>
 
           <div className="flex items-center gap-4">
-            {/* Imagem do produto */}
+
             <span className="w-24 h-24 flex-shrink-0 flex items-center justify-center">
               {item.product?.imageUrl ? (
                 <Image
@@ -59,7 +59,7 @@ export default function StockMobileList({
               </p>
 
               <div className="flex gap-4 justify-between text-sm text-gray-500">
-                <span>Tipo de Movimentação: {item.movementType}</span>
+                <span>Tipo E/S: {item.movementType}</span>
                 <span>Quantidade: {item.quantity}</span>
               </div>
 
