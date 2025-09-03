@@ -5,7 +5,7 @@ import { onlyNumbers } from "../utils/util";
 
 export function handleLogin(phone: string, password: string): Promise<AuthUserResponseData> {
     const restClient = RestClient();
-    const toastify = toast.loading("Realizando login🔐...");
+    // const toastify = toast.loading("Realizando login🔐...");
     const headers = new Map().set("Content-Type", "application/json");
     const data = {
         phone: onlyNumbers(phone),
@@ -19,8 +19,8 @@ export function handleLogin(phone: string, password: string): Promise<AuthUserRe
         },
         reqInitConfig: {
             throws: true,
-            toastify,
-            toastifySuccessMsg: "Login realizado com sucesso!✅"
+            // toastify,
+            // toastifySuccessMsg: "Login realizado com sucesso!✅"
         }
     };
 
