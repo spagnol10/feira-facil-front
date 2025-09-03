@@ -7,10 +7,7 @@ import {
   handleSaveNewProduct,
   handleUpdateProduct,
 } from "../../repositories/product.repository";
-import {
-  FilterProduct,
-  TableNavigation
-} from "../../utils/types";
+import { FilterProduct, TableNavigation } from "../../utils/types";
 import { getToken } from "../../utils/util";
 import useMiddleware from "../middleware";
 
@@ -96,7 +93,6 @@ export default function useProductViewModel() {
 
     if (!product.category) return "Categoria do produto é obrigatória.";
     return null;
-    
   }
 
   function saveProduct() {

@@ -3,16 +3,15 @@ import Button from "../../components/standard/Button";
 import CustomInput from "../../components/standard/CustomInput";
 import DefaultSelectOne from "../../components/standard/DefaultSelectOne";
 import { ArrowLeftIcon } from "../../components/svg/SvgIcons";
+import { Product } from "../../model/Product";
 import { StockMovement } from "../../model/StockMovement";
 import { EnumMovementType } from "../../utils/types";
 import {
   formatMoneyWithSign,
   getProductColor,
   getProductImage,
-  handleChange,
-  handleChangeValue,
+  handleChangeValue
 } from "../../utils/util";
-import { Product } from "../../model/Product";
 
 interface StockFormProps {
   movementToEdit: StockMovement;
