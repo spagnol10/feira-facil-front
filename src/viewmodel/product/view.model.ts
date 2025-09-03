@@ -5,7 +5,7 @@ import {
   EnumMeasurementUnit,
   EnumProductCategory,
   FilterProduct,
-  TableNavigation
+  TableNavigation,
 } from "../../utils/types";
 import { getToken } from "../../utils/util";
 import {
@@ -36,37 +36,28 @@ export default function useProductViewModel() {
   const isNewProduct = productToEdit?.id === undefined;
 
   useEffect(() => {
-
     setIsClient(true);
 
-    verifyUserAuth()
+    verifyUserAuth();
 
     fetchProducts(INITIAL_PAGE);
-
   }, []);
 
   function openNewProductForm() {
-
     setProductToEdit(new Product());
-
   }
 
   function closeProductForm() {
-
     setProductToEdit(undefined);
-
   }
 
   function setFieldValue(field: keyof Product, value: any) {
-
     setProductToEdit((prev) => {
-
       if (!prev) return prev;
 
       const updated = { ...prev, [field]: value };
 
       return Object.assign(Object.create(Object.getPrototypeOf(prev)), updated);
-
     });
   }
 
@@ -161,45 +152,23 @@ export default function useProductViewModel() {
         .catch(console.error)
         .finally(() => setLoading(false));
     }
-
   }
 
   function parseMeasurementTypeToLabel(): string {
     if (!productToEdit?.measurementType) return "";
     switch (productToEdit.measurementType) {
-        case EnumMeasurementType.UNIT: return "Unidade";
-        case EnumMeasurementType.BOX: return "Caixa";
-        case EnumMeasurementType.WEIGHT: return "Peso";
-        case EnumMeasurementType.VOLUME: return "Volume";
-        default: return "";
+      case EnumMeasurementType.UNIT:
+        return "Unidade";
+      case EnumMeasurementType.BOX:
+        return "Caixa";
+      case EnumMeasurementType.WEIGHT:
+        return "Peso";
+      case EnumMeasurementType.VOLUME:
+        return "Volume";
+      default:
+        return "";
     }
-}
-
-function parseMeasurementUnitToLabel(): string {
-    if (!productToEdit?.measurementUnit) return "";
-    switch (productToEdit.measurementUnit) {
-        case EnumMeasurementUnit.KG: return "Kilograma";
-        case EnumMeasurementUnit.G: return "Grama";
-        case EnumMeasurementUnit.L: return "Litro";
-        case EnumMeasurementUnit.ML: return "Mililitro";
-        case EnumMeasurementUnit.QTD: return "Quantidade";
-        default: return "";
-    }
-}
-
-function parseCategoryToLabel(): string {
-    if (!productToEdit?.category) return "";
-    switch (productToEdit.category) {
-        case EnumProductCategory.VERDURA: return "Verdura";
-        case EnumProductCategory.LEGUME: return "Legume";
-        case EnumProductCategory.FRUTA: return "Fruta";
-        case EnumProductCategory.CEREAIS_GRAOS: return "Grãos e Cereais";
-        case EnumProductCategory.ERVAS_TEMPEROS: return "Ervas e Temperos";
-        case EnumProductCategory.ARTESANATO: return "Artesanato";
-        case EnumProductCategory.FLORES: return "Flores";
-        default: return "";
-    }
-}
+  }
 
   return {
     isClient,
@@ -216,8 +185,5 @@ function parseCategoryToLabel(): string {
     updateProduct,
     validateProduct,
     tableNavigation,
-    parseMeasurementTypeToLabel,
-    parseMeasurementUnitToLabel,
-    parseCategoryToLabel,
   };
 }

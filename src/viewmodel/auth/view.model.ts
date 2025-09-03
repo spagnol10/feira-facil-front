@@ -82,7 +82,7 @@ export function useAuthViewModel() {
             .catch(err => err);
 
         setLoading(false);
-        cleanAllFields();
+        // cleanAllFields();
     }
 
     function handleSendTokenNotification(resetPasswordFlow?: boolean) {
