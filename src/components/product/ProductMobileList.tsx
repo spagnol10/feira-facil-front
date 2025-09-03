@@ -1,8 +1,7 @@
 import Image from "next/image";
-import TablePaginator from "../standard/TablePaginator";
-import { CheckIcon, XIcon, PencilIcon, PhotoIcon } from "../svg/SvgIcons";
 import { ProductProps } from "../../utils/types";
 import { formatMoneyWithSign } from "../../utils/util";
+import { PencilIcon, PhotoIcon } from "../svg/SvgIcons";
 
 export default function ProductMobileList({
   products,
@@ -60,31 +59,19 @@ export default function ProductMobileList({
               </div>
             </div>
           </div>
-
-          {/* <div className="mt-3">
-            {item.active ? (
-              <div className="flex items-center gap-1 bg-green-100 text-green-700
-               font-semibold px-3 py-1 rounded-full w-fit transform transition-transform duration-200 hover:scale-105">
-                <CheckIcon size={16} /> ATIVO
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 bg-red-100 text-red-600
-               font-semibold px-3 py-1 rounded-full w-fit transform transition-transform duration-200 hover:scale-105">
-                <XIcon size={16} /> DESATIVADO
-              </div>
-            )}
-          </div> */}
         </div>
       ))}
 
-      <div className="flex justify-center mt-4">
-        <TablePaginator
-          totalItems={totalItems}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handleChangePage={handleChangePage}
-        />
-      </div>
+      {currentPage < totalPages && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => handleChangePage(currentPage + 1)}
+            className="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Carregar mais
+          </button>
+        </div>
+      )}
     </div>
   );
 }

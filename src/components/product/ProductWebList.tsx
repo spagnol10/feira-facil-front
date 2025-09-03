@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ProductProps } from "../../utils/types";
 import { formatMoneyWithSign, getProductColor } from "../../utils/util";
 import TablePaginator from "../standard/TablePaginator";
-import { ExportDataIcon, FilterIcon, PencilIcon } from "../svg/SvgIcons";
+import { PencilIcon } from "../svg/SvgIcons";
 
 export default function ProductTable({
   products,
@@ -13,93 +13,73 @@ export default function ProductTable({
   currentPage,
 }: ProductProps) {
   return (
-    <div className="bg-white p-6 w-full rounded-2xl shadow-lg">
-      <div className="w-full h-full">
-        <div className="flex justify-between items-center h-8 md:h-10">
-          <h2 className="font-semibold text-2xl text-secondary">Produtos</h2>
-          <span className="flex gap-4">
-            <button onClick={() => console.log("Fluxo de exportar csv")}>
-              <ExportDataIcon />
-            </button>
-            <button onClick={() => console.log("Apresentar filtro")}>
-              <FilterIcon />
-            </button>
-          </span>
+    <div className="bg-white p-4 md:p-6 w-full rounded-2xl shadow-md">
+      <div className="w-full h-full overflow-x-auto">
+
+        <div className="flex justify-between items-center h-10 mb-4">
+          <h2 className="font-semibold text-2xl text-gray-700">Produtos</h2>
         </div>
-        <table className="w-full mt-8 hidden md:block">
-          <thead className="w-full">
-            <th className="w-12 px-4 py-2" />
-            <th className="w-24 text-secondary text-xs font-normal px-4 py-2">Código</th>
-            <th className="w-48 text-secondary text-xs font-normal px-4 py-2">Nome</th>
-            <th className="w-32 text-secondary text-xs font-normal px-4 py-2">Valor custo</th>
-            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Valor venda</th>
-            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Estoque</th>
-            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Mensuração</th>
-            <th className="w-32 text-secondary text-xs font-normal text-left px-4 py-2">Unidade mensuração</th>
-            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Tipo</th>
-            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Status</th>
-            <th className="w-24 text-secondary text-xs font-normal text-left px-4 py-2">Editar</th>
-            <th className="w-12 px-4 py-2" />
+
+        <table className="w-full hidden md:table table-fixed border-collapse">
+          <thead>
+            <tr className="text-left text-gray-500 text-xs font-medium">
+              <th className="w-24 px-2 py-1 text-center">Imagem</th>
+              <th className="w-24 px-2 py-1 text-center">Código</th>
+              <th className="w-48 px-2 py-1 text-center">Nome</th>
+              <th className="w-32 px-2 py-1 text-center">Valor custo</th>
+              <th className="w-32 px-2 py-1 text-center">Valor venda</th>
+              <th className="w-24 px-2 py-1 text-center">Estoque</th>
+              <th className="w-32 px-2 py-1 text-center">Mensuração</th>
+              <th className="w-32 px-2 py-1 text-center">Unidade</th>
+              <th className="w-24 px-2 py-1 text-center">Categoria</th>
+              <th className="w-24 px-2 py-1 text-center">Status</th>
+              <th className="w-24 px-2 py-1 text-center">Editar</th>
+              <th className="w-12 px-2 py-1 text-center" />
+            </tr>
           </thead>
           <tbody>
             {products.map((item) => (
-              <tr className="h-16" key={item.id}>
-                <td className="min-w-12 lg:min-w-16 xl:min-w-20">
+              <tr
+                key={item.id}
+                className="h-16 odd:bg-gray-50 even:bg-white hover:bg-gray-100 transition-colors"
+              >
+                {/* Imagem */}
+                <td className="flex justify-center px-2 py-1">
                   <Image
                     src={item.imageUrl ?? "/placeholder-image.png"}
                     alt={item.name}
-                    width={58}
-                    height={40}
+                    width={48}
+                    height={48}
+                    className="rounded-full object-cover"
                   />
                 </td>
-                <td className="w-[6%] text-secondary text-sm">{item.code}</td>
-                <td className="w-[15%] text-secondary text-sm text-center">{item.name}</td>
-                <td className="w-[10%] text-center text-secondary text-sm">
-                  {formatMoneyWithSign(item.costPrice)}
+
+                <td className="text-sm text-gray-500 text-center px-2 py-1">{item.code}</td>
+                <td className="text-sm font-semibold text-gray-700 text-center px-2 py-1 truncate" title={item.name}>{item.name}</td>
+                <td className="text-sm text-gray-500 text-center px-2 py-1">{formatMoneyWithSign(item.costPrice)}</td>
+                <td className="text-sm text-gray-500 text-center px-2 py-1">{formatMoneyWithSign(item.sellingPrice)}</td>
+                <td className="text-sm text-gray-500 text-center px-2 py-1">{item.stock ?? 0}</td>
+                <td className="text-sm text-gray-500 text-center px-2 py-1 truncate" title={item.measurementType}>{item.measurementType}</td>
+                <td className="text-sm text-gray-500 text-center px-2 py-1 truncate" title={item.measurementUnit}>{item.measurementUnit}</td>
+
+                <td className="text-center px-2 py-1">
+                  <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${getProductColor(item.category!)}`}>
+                    {item.category}
+                  </span>
                 </td>
-                <td className="w-[10%] text-center text-secondary text-sm">
-                  {formatMoneyWithSign(item.sellingPrice)}
+
+                <td className="text-center px-2 py-1">
+                  <span className={`text-sm font-semibold px-2 py-0.5 rounded-full ${
+                    item.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+                  }`}>
+                    {item.active ? "Ativo" : "Desativado"}
+                  </span>
                 </td>
-                <td className="w-[12%] text-center text-secondary text-sm">
-                  {item.stock ? item.stock : 0}
-                </td>
-                <td className="w-[10%] text-center text-secondary text-sm">
-                  {item.measurementType}
-                </td>
-                <td className="w-[10%] lg:w-[15%] text-center text-secondary text-sm">
-                  {item.measurementUnit}
-                </td>
-                <td className="w-[10%] text-sm whitespace-nowrap">
-                  <div className="w-full flex justify-center">
-                    <span className="bg-primary bg-opacity-20 text-secondary hidden" />
-                    <span className="bg-blue-500 bg-opacity-20 text-blue-600 hidden" />
-                    <span className="bg-tertiary bg-opacity-20 text-tertiary hidden" />
-                    <p
-                      className={`${getProductColor(
-                        item.category!
-                      )} p-0.5 px-3 rounded-2xl w-fit`}
-                    >
-                      {item.category}
-                    </p>
-                  </div>
-                </td>
-                <td className="w-[10%]">
-                  <div className="w-full flex justify-center">
-                    <p
-                      className={`p-0.5 px-3 rounded-2xl w-fit text-sm whitespace-nowrap
-                    ${item.active
-                          ? "bg-green-100 text-secondary"
-                          : "bg-red-100 text-red-600"
-                        }`}
-                    >
-                      {item.active ? "ATIVO" : "DESATIVADO"}
-                    </p>
-                  </div>
-                </td>
-                <td className="w-[10%]">
+
+                <td className="text-center px-2 py-1">
                   <button
                     onClick={() => setProductToEdit(item)}
-                    className="w-full flex justify-center"
+                    className="hover:text-primary transition-colors"
                     aria-label="Editar produto"
                   >
                     <PencilIcon fill="#245F40" />
@@ -108,13 +88,16 @@ export default function ProductTable({
               </tr>
             ))}
           </tbody>
+        </table>
+
+        <div className="mt-4 hidden md:flex justify-center">
           <TablePaginator
             currentPage={currentPage}
             totalItems={totalItems}
             totalPages={totalPages}
             handleChangePage={handleChangePage}
           />
-        </table>
+        </div>
       </div>
     </div>
   );
