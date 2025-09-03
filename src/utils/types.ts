@@ -159,16 +159,6 @@ export type SimpleCompanyData = {
   document: string;
 };
 
-export type StockMovementType = {
-  id: number;
-  produto: Product;
-  tipoES: EnumEntryOut;
-  tipoMovimento: string;
-  quantidade: number;
-  saldo: number;
-  dataMovimento: string;
-};
-
 export type OrderItemType = {
   procuct: Product;
   quantity: number;
@@ -225,7 +215,6 @@ export type IbgeCitiesResponse = {
 };
 
 ///Revisar tipagens
-
 export type CustomerType = {
   id: string;
   name: string;
@@ -280,6 +269,13 @@ export type PreRegisterUserType = {
 
 export type ProductPagebleList = {
   data: Array<Product>;
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+};
+
+export type DataPagebleList = {
+  data: Array<any>;
   totalItems: number;
   totalPages: number;
   currentPage: number;
@@ -379,8 +375,8 @@ export enum EnumRegisterCompanyStep {
   POS_RESQUEST,
 }
 
-export enum EnumEntryOut {
-  ENTRY = "ENTRADA",
+export enum EnumMovementType {
+  IN = "ENTRADA",
   OUT = "SAÍDA",
 }
 
@@ -530,3 +526,12 @@ export enum EnumProductCategory {
   ARTESANATO = "ARTESANATO",
   FLORES = "FLORES",
 }
+
+export type FilterStockMovement = {
+  companyId?: string;      
+  productId?: string;      
+  type?: EnumMovementType;     
+  startDate?: string;      
+  endDate?: string;        
+  page?: number;
+};

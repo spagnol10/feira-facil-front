@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useAppContext } from "../../context/appContext";
 import { Product } from "../../model/Product";
 import {
-  EnumMeasurementType,
-  EnumMeasurementUnit,
-  EnumProductCategory,
+  handleFilterFetchProducts,
+  handleSaveNewProduct,
+  handleUpdateProduct,
+} from "../../repositories/product.repository";
+import {
   FilterProduct,
-  TableNavigation,
+  TableNavigation
 } from "../../utils/types";
 import { getToken } from "../../utils/util";
-import {
-  handleFilterFetchProducts,
-  handleUpdateProduct,
-  handleSaveNewProduct,
-} from "../../repositories/product.repository";
 import useMiddleware from "../middleware";
-import { useAppContext } from "../../context/appContext";
-import { toast } from "react-toastify";
 
 export default function useProductViewModel() {
   const { isAuth, verifyUserAuth } = useMiddleware();
@@ -86,14 +83,20 @@ export default function useProductViewModel() {
 
   function validateProduct(product: Product): string | null {
     if (!product.name?.trim()) return "Produto não pode ser salvo sem Nome.";
+
     if (!product.sellingPrice || product.sellingPrice <= 0)
       return "Preço de venda deve ser maior que zero.";
+
     if (!product.costPrice || product.costPrice <= 0)
       return "Preço de custo deve ser maior que zero.";
+
     if (!product.measurementType) return "Tipo de medida é obrigatório.";
+
     if (!product.measurementUnit) return "Unidade de medida é obrigatória.";
+
     if (!product.category) return "Categoria do produto é obrigatória.";
     return null;
+    
   }
 
   function saveProduct() {
@@ -154,25 +157,10 @@ export default function useProductViewModel() {
     }
   }
 
-  function parseMeasurementTypeToLabel(): string {
-    if (!productToEdit?.measurementType) return "";
-    switch (productToEdit.measurementType) {
-      case EnumMeasurementType.UNIT:
-        return "Unidade";
-      case EnumMeasurementType.BOX:
-        return "Caixa";
-      case EnumMeasurementType.WEIGHT:
-        return "Peso";
-      case EnumMeasurementType.VOLUME:
-        return "Volume";
-      default:
-        return "";
-    }
-  }
-
   return {
     isClient,
     isAuth,
+    loading,
     products,
     fetchProducts,
     productToEdit,

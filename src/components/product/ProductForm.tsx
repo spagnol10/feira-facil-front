@@ -4,6 +4,7 @@ import CustomTextArea from "../../components/standard/CustomTextArea";
 import CustomToggle from "../../components/standard/CustomToggle";
 import DefaultSelectOne from "../../components/standard/DefaultSelectOne";
 import { ArrowLeftIcon } from "../../components/svg/SvgIcons";
+import { Product } from "../../model/Product";
 import {
   EnumMeasurementType,
   EnumMeasurementUnit,
@@ -14,7 +15,6 @@ import {
   handleChange,
   handleChangeValue,
 } from "../../utils/util";
-import { Product } from "../../model/Product";
 import ProductImageUploader from "../image/ProductImageUploader";
 
 interface ProductFormProps {
@@ -50,8 +50,8 @@ export default function ProductForm({
         {isNewProduct ? "Cadastrar Produto" : "Editar Produto"}
       </h2>
       <p className="text-gray-500 text-sm mt-1">
-        Preencha os dados abaixo para {isNewProduct ? "criar" : "atualizar"} o
-        produto.
+        Preencha os dados abaixo para {isNewProduct ? "Cadastrar" : "Atualizar"}{" "}
+        o produto.
       </p>
 
       <div className="mt-8 flex justify-center">
