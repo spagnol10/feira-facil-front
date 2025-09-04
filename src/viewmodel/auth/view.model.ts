@@ -117,6 +117,8 @@ export function useAuthViewModel() {
     function handleStartCreateUser() {
         cleanAllFields();
 
+        setAuthScreen(EnumAuthScreen.CREATE_USER);
+
         setAuthScreen(EnumAuthScreen.SEND_VALIDATION_TOKEN);
     }
 

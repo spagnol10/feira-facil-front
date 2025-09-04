@@ -23,6 +23,7 @@ export function handleFilterFetchStockMovements(
       headers,
       query: {
         page: filter.page,
+        companyId: filter.companyId,
       },
     },
     reqInitConfig: { throws: true },
@@ -37,17 +38,17 @@ export function handleSaveNewStockMovement(
   token: string
 ): Promise<any> {
   const restClient = RestClient();
-  const headers = new Map<string, string>().set("companyId", companyId);
+  const headers = new Map().set("companyId", companyId);
 
   const reqConfig: RequestConfig = {
     reqParams: {
-      token,
       headers,
+      token,
       json: JSON.stringify(newMovement),
     },
     reqInitConfig: {
       throws: true,
-      toastifySuccessMsg: "Movimento registrado com sucesso ✅",
+      toastifySuccessMsg: "Movimento registrado com sucesso!",
     },
   };
 

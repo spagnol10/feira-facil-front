@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useAppContext } from "../../context/appContext";
+import { Product } from "../../model/Product";
 import { StockMovement } from "../../model/StockMovement";
+import { handleFilterFetchProducts } from "../../repositories/product.repository";
 import {
   handleFilterFetchStockMovements,
   handleSaveNewStockMovement,
-  handleUpdateStockMovement,
 } from "../../repositories/stock.repository";
-import { FilterProduct, FilterStockMovement, TableNavigation } from "../../utils/types";
+import {
+  FilterProduct,
+  FilterStockMovement,
+  TableNavigation,
+} from "../../utils/types";
 import { getToken } from "../../utils/util";
 import useMiddleware from "../middleware";
-import { Product } from "../../model/Product";
-import { handleFilterFetchProducts } from "../../repositories/product.repository";
 
 export default function useStockViewModel() {
   const { isAuth, verifyUserAuth } = useMiddleware();
@@ -103,6 +106,7 @@ export default function useStockViewModel() {
     }
 
     const error = validateMovement(movementToEdit);
+
     if (error) {
       toast.warning(error);
       return;
@@ -153,27 +157,27 @@ export default function useStockViewModel() {
   }
 
   function fetchProducts(page: number = INITIAL_PAGE) {
-      const token = getToken();
-      const companyId = user?.company?.id;
-  
-      const filter: FilterProduct = { page, companyId };
-  
-      if (token) {
-        setLoading(true);
-  
-        handleFilterFetchProducts(filter, token)
-          .then((res) => {
-            setProducts(res.data.map((item: any) => new Product(item)));
-            setTableNavigation({
-              currentPage: res.currentPage,
-              totalItems: res.totalItems,
-              totalPages: res.totalPages,
-            });
-          })
-          .catch(console.error)
-          .finally(() => setLoading(false));
-      }
+    const token = getToken();
+    const companyId = user?.company?.id;
+
+    const filter: FilterProduct = { page, companyId };
+
+    if (token) {
+      setLoading(true);
+
+      handleFilterFetchProducts(filter, token)
+        .then((res) => {
+          setProducts(res.data.map((item: any) => new Product(item)));
+          setTableNavigation({
+            currentPage: res.currentPage,
+            totalItems: res.totalItems,
+            totalPages: res.totalPages,
+          });
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false));
     }
+  }
 
   return {
     isClient,

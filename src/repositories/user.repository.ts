@@ -65,8 +65,8 @@ export function completeRegister(updatePayload: UpdateUserType, token: string): 
         },
         reqInitConfig: {
             throws: true,
-            // toastify,
-            // toastifySuccessMsg: "Cadastro finalizado com sucesso."
+            toastify,
+            toastifySuccessMsg: "Cadastro finalizado com sucesso."
         },
     };
 
