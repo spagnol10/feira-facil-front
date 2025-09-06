@@ -35,10 +35,14 @@ export function handleFilterFetchStockMovements(
 export function handleSaveNewStockMovement(
   newMovement: StockMovement,
   companyId: string,
+  productId: string,
   token: string
 ): Promise<any> {
   const restClient = RestClient();
-  const headers = new Map().set("companyId", companyId);
+  const headers = new Map();
+  
+  headers.set("companyId", companyId);
+  headers.set("productId", productId);
 
   const reqConfig: RequestConfig = {
     reqParams: {
@@ -71,7 +75,7 @@ export function handleUpdateStockMovement(
     movementType: movement.movementType,
     quantity: movement.quantity,
     balance: movement.balance,
-    movementDate: movement.movementDate,
+    movementDate: movement.createdAt,
   };
 
   const reqConfig: RequestConfig = {

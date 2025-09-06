@@ -37,7 +37,7 @@ export default function useStockViewModel() {
     totalPages: 0,
   });
 
-  const isNewMovement = movementToEdit?.id === 0;
+  const isNewMovement = !movementToEdit?.id;
 
   useEffect(() => {
     fetchProducts();
@@ -118,7 +118,14 @@ export default function useStockViewModel() {
     if (token && companyId) {
       setLoading(true);
 
-      handleSaveNewStockMovement(movementToEdit, companyId, token)
+      const productId =  movementToEdit.productId;         
+
+      if(!productId){
+        toast.warning(error);
+        return ;
+      }
+
+      handleSaveNewStockMovement(movementToEdit, productId, companyId, token)
         .then(() => {
           closeMovementForm();
           fetchMovements(INITIAL_PAGE);
@@ -146,13 +153,15 @@ export default function useStockViewModel() {
     if (token && companyId) {
       setLoading(true);
 
-      handleSaveNewStockMovement(movementToEdit, companyId, token)
-        .then(() => {
-          closeMovementForm();
-          fetchMovements(INITIAL_PAGE);
-        })
-        .catch(console.error)
-        .finally(() => setLoading(false));
+      toast.warning("Nenhum movimento para salvar.");
+
+      // handleSaveNewStockMovement(movementToEdit, companyId, token)
+      //   .then(() => {
+      //     closeMovementForm();
+      //     fetchMovements(INITIAL_PAGE);
+      //   })
+      //   .catch(console.error)
+      //   .finally(() => setLoading(false));
     }
   }
 

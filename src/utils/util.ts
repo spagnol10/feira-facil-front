@@ -181,6 +181,12 @@ export function formatPhoneInput(value: string): string {
 }
 
 export function formatMoneyWithSign(amount: number) {
+  console.log(amount);
+
+  if (!amount) {
+    return "R$0.00";
+  }
+
   return amount
     .toFixed(2)
     .replace("", "R$ ")

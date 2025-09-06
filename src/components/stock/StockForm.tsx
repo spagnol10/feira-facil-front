@@ -10,7 +10,7 @@ import {
   formatMoneyWithSign,
   getProductColor,
   getProductImage,
-  handleChangeValue
+  handleChangeValue,
 } from "../../utils/util";
 
 interface StockFormProps {
@@ -54,14 +54,18 @@ export default function StockForm({
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <DefaultSelectOne
-          handleSelect={(val) =>
-            setMovementToEdit(
-              new StockMovement({
-                ...movementToEdit,
-                product: products.find((p) => p.name === val),
-              })
-            )
-          }
+          handleSelect={(val) => {
+            const selectedProduct = products.find((p) => p.name === val);
+            if (selectedProduct) {
+              setMovementToEdit(
+                new StockMovement({
+                  ...movementToEdit,
+                  productId: selectedProduct.id, 
+                  product: selectedProduct, 
+                })
+              );
+            }
+          }}
           inputHeaderText="Produto"
           optionValue={movementToEdit.product?.name ?? ""}
           options={products.map((p) => p.name)}

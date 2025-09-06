@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react";
-import useMiddleware from "../middleware";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/appContext";
-import {
-  EnumPaymentType,
-  FilterProduct,
-  TableNavigation,
-} from "../../utils/types";
-import { equalsEnum, getEnumKeyByValue, getToken } from "../../utils/util";
-import {
-  handleFetchStockProducts,
-  handleFilterFetchProducts,
-} from "../../repositories/product.repository";
+import { Product } from "../../model/Product";
 import {
   handleCreateSale,
   handleGetSaleData,
   handleReverseOrder,
   handleWaiveOrder,
 } from "../../repositories/order.repository";
-import { Product } from "../../model/Product";
+import {
+  handleFetchStockProducts
+} from "../../repositories/product.repository";
+import {
+  EnumPaymentType,
+  TableNavigation
+} from "../../utils/types";
+import { equalsEnum, getEnumKeyByValue, getToken } from "../../utils/util";
+import useMiddleware from "../middleware";
 
 export type CustomerType = {
   id: string;

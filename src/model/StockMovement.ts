@@ -3,11 +3,12 @@ import { Product } from "./Product";
 
 export class StockMovement {
   id?: number;
+  productId?: string; 
   product?: Product;
   movementType!: EnumMovementType;
   quantity: number = 0;
   balance: number = 0;
-  movementDate?: string;
+  createdAt?: string;
 
   constructor(init?: Partial<StockMovement>) {
     Object.assign(this, init);

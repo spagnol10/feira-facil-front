@@ -59,13 +59,13 @@ export default function StockMobileList({
               </p>
 
               <div className="flex gap-4 justify-between text-sm text-gray-500">
-                <span>Tipo E/S: {item.movementType}</span>
+                <span>Movimento: {item.movementType}</span>
                 <span>Quantidade: {item.quantity}</span>
               </div>
 
               <div className="flex gap-4 justify-between text-sm text-gray-500 mt-2">
                 <span>Saldo: {item.balance}</span>
-                <span>Data: {item.movementDate}</span>
+                <span>Data: {item.createdAt}</span>
               </div>
 
               {item.product && (
